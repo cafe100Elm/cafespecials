@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Menu System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 20px;
+        }
+        
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 15px;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .main-grid {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .form-card {
+            width: 400px;
+            flex-shrink: 0;
+        }
+        
+        .archive-card {
+            width: 300px;
+            flex-shrink: 0;
+        }
+        
+        .preview-card {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                flex-direction: column;
+            }
+            
+            .form-card, .archive-card {
+                width: 100%;
+            }
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            overflow-y: auto;
+        }
+        
+        .allergen-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .allergen-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .allergen-item input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+        
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        
+        .btn-purple {
+            background-color: #9333ea;
+            color: white;
+        }
+        
+        .btn-purple:hover {
+            background-color: #7c3aed;
+        }
+        
+        .btn-orange {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        .btn-orange:hover {
+            background-color: #c2410c;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+        }
+        
+        .menu-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .menu-item[draggable="true"] {
+            transition: transform 0.2s ease;
+        }
+        
+        .menu-item[draggable="true"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+        
+        .menu-item-name {
+            font-weight: bold;
+            font-size: 13pt;
+        }
+        
+        .menu-item-allergens {
+            font-size: 13pt;
+            margin-left: 8px;
+        }
+        
+        .menu-item-price {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-left: 15px;
+        }
+        
+        .menu-item-description {
+            font-size: 13pt;
+            color: #1f2937;
+        }
+        
+        .menu-preview {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .menu-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .menu-header h1 {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .menu-header .date {
+            font-size: 17.5px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .menu-header p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .current-items {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .item-list-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .item-actions button {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .edit-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background-color: #2563eb;
+        }
+        
+        .archive-btn {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        .archive-btn:hover {
+            background-color: #c2410c;
+        }
+        
+        .restore-btn {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .restore-btn:hover {
+            background-color: #15803d;
+        }
+        
+        .delete-btn {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background-color: #b91c1c;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 8.5in !important;
+                height: 11in !important;
+                padding: 0.5in !important;
+                margin: 0 !important;
+                background: white !important;
+                font-size: 13pt !important;
+                line-height: 1.4 !important;
+                color: black !important;
+            }
+            
+            .menu-item-name {
+                font-size: 13pt !important;
+                font-weight: bold !important;
+            }
+            
+            .menu-item-allergens {
+                font-size: 13pt !important;
+                font-weight: normal !important;
+            }
+            
+            .menu-item-price {
+                font-size: 13pt !important;
+                font-weight: bold !important;
+            }
+            
+            .menu-item-description {
+                font-size: 13pt !important;
+                font-weight: normal !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-box">
+                <h1>Cafe Menu System</h1>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Enter password">
+                </div>
+                <button onclick="login()" class="btn btn-primary btn-full">Login</button>
+            </div>
+        </div>
+
+        <!-- Admin Interface -->
+        <div id="adminInterface" class="hidden">
+            <div class="header">
+                <div class="header-content">
+                    <h1>Menu Management</h1>
+                    <div style="display: flex; gap: 15px;">
+                        <button onclick="toggleArchive()" class="btn btn-purple" id="archiveToggle">Show Archive</button>
+                        <button onclick="printMenu()" class="btn btn-primary">Print Menu</button>
+                        <button onclick="logout()" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="main-grid">
+                    <!-- Input Form -->
+                    <div class="card form-card">
+                        <h2 id="formTitle">Add Menu Item</h2>
+                        
+                        <form id="menuForm">
+                            <div class="form-group">
+                                <label for="itemName">Item Name</label>
+                                <input type="text" id="itemName" placeholder="e.g., Curry Lentil Soup">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="itemDescription">Description</label>
+                                <textarea id="itemDescription" placeholder="e.g., lentils, onions, carrots, garlic, ginger, curry powder, coconut milk"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="itemPrice">Price</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <input type="number" id="itemDollars" placeholder="0" min="0" style="text-align: center;">
+                                        <div style="text-align: center; font-size: 12px; color: #6b7280; margin-top: 2px;">dollars</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: bold;">.</div>
+                                    <div style="flex: 1;">
+                                        <input type="number" id="itemCents" placeholder="00" min="0" max="99" style="text-align: center;">
+                                        <div style="text-align: center; font-size: 12px; color: #6b7280; margin-top: 2px;">cents</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Item Options</label>
+                                <select id="itemOptions" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; font-family: inherit;">
+                                    <option value="">No special options</option>
+                                    <option value="hotSoup">Hot Soup (includes crackers/sour cream, cup/bowl option)</option>
+                                    <option value="coldSoup">Cold Soup (cup/bowl option only)</option>
+                                    <option value="fries">Includes Fries (optional sauces available)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Allergens & Dietary</label>
+                                <div class="allergen-grid" id="allergenGrid">
+                                    <!-- Allergens will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="btn-group" id="formButtons">
+                                <button type="button" onclick="addItem()" class="btn btn-success">Add Item</button>
+                            </div>
+                        </form>
+
+                        <!-- Current Items -->
+                        <div id="currentItems" class="current-items hidden">
+                            <h3>Current Items (<span id="itemCount">0</span>)</h3>
+                            <div id="itemsList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Archive Panel -->
+                    <div id="archivePanel" class="card archive-card hidden">
+                        <h2>Archived Items</h2>
+                        <div id="archivedItemsList">
+                            <div class="empty-state">No archived items yet.</div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Preview -->
+                    <div class="card preview-card">
+                        <h3>Print Preview</h3>
+                        <div class="menu-preview">
+                            <div id="menuPreview" class="print-area" style="padding: 30px;">
+                                <div class="menu-header">
+                                    <h1>SPECIALS</h1>
+                                    <p class="date" id="currentDate"></p>
+                                    <p>available from 11 am - 2:30 pm</p>
+                                    <p>we cannot make modifications</p>
+                                </div>
+                                
+                                <div id="menuItems">
+                                    <div class="empty-state">
+                                        No items added yet. Use the form to add menu items.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let menuItems = [];
+        let archivedItems = [];
+        let editingItemId = null;
+        let showingArchive = false;
+        
+        const allergenOptions = [
+            'coconut', 'egg', 'milk', 'peanut', 'seafood', 'sesame', 
+            'shellfish', 'soy', 'tree nut', 'vegan', 'vegetarian', 'wheat/gluten'
+        ];
+
+        // Initialize the app
+        function init() {
+            loadData();
+            populateAllergens();
+            updateCurrentDate();
+            renderMenuItems();
+            updateCurrentItemsList();
+            updateArchivedItemsList();
+        }
+
+        // Login function
+        function login() {
+            const password = document.getElementById('password').value;
+            if (password === 'admin123') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminInterface').classList.remove('hidden');
+                document.getElementById('password').value = '';
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            document.getElementById('adminInterface').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            cancelEdit();
+        }
+
+        // Toggle archive panel
+        function toggleArchive() {
+            showingArchive = !showingArchive;
+            const panel = document.getElementById('archivePanel');
+            const btn = document.getElementById('archiveToggle');
+            
+            if (showingArchive) {
+                panel.classList.remove('hidden');
+                btn.textContent = 'Hide Archive';
+            } else {
+                panel.classList.add('hidden');
+                btn.textContent = 'Show Archive';
+            }
+        }
+
+        // Print menu
+        function printMenu() {
+            window.print();
+        }
+
+        // Populate allergen checkboxes
+        function populateAllergens() {
+            const grid = document.getElementById('allergenGrid');
+            grid.innerHTML = '';
+            
+            allergenOptions.forEach(allergen => {
+                const div = document.createElement('div');
+                div.className = 'allergen-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="allergen_${allergen}" value="${allergen}">
+                    <label for="allergen_${allergen}">${allergen}</label>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Get item options
+        function getItemOptions() {
+            const selectedOption = document.getElementById('itemOptions').value;
+            return {
+                isHotSoup: selectedOption === 'hotSoup',
+                isColdSoup: selectedOption === 'coldSoup',
+                hasFries: selectedOption === 'fries'
+            };
+        }
+
+        // Set item options
+        function setItemOptions(options) {
+            let selectedValue = '';
+            if (options.isHotSoup) selectedValue = 'hotSoup';
+            else if (options.isColdSoup) selectedValue = 'coldSoup';
+            else if (options.hasFries) selectedValue = 'fries';
+            
+            document.getElementById('itemOptions').value = selectedValue;
+        }
+
+        // Format item name to smart title case with special handling for quotes and small words
+        function formatItemName(name) {
+            const smallWords = ['and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+            
+            return name.split(' ').map((word, index) => {
+                // Handle words that start with quotes
+                if (word.startsWith('"')) {
+                    const restOfWord = word.slice(1);
+                    // Always capitalize the letter after the quote
+                    return '"' + restOfWord.charAt(0).toUpperCase() + restOfWord.slice(1).toLowerCase();
+                }
+                
+                // Don't capitalize small words unless they're the first word
+                if (smallWords.includes(word.toLowerCase()) && index > 0) {
+                    return word.toLowerCase();
+                }
+                
+                // Regular title case
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
+        }
+
+        // Remove the description formatting function since descriptions should stay lowercase
+        // Remove the real-time input handler
+
+        // Drag and drop functionality
+        let draggedItem = null;
+        let draggedIndex = null;
+
+        function handleDragStart(e, index) {
+            draggedItem = menuItems[index];
+            draggedIndex = index;
+            e.dataTransfer.effectAllowed = 'move';
+            e.target.style.opacity = '0.5';
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            draggedItem = null;
+            draggedIndex = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(e, dropIndex) {
+            e.preventDefault();
+            
+            if (draggedIndex === null || draggedIndex === dropIndex) return;
+            
+            // Remove dragged item from original position
+            const item = menuItems.splice(draggedIndex, 1)[0];
+            
+            // Insert at new position
+            menuItems.splice(dropIndex, 0, item);
+            
+            saveData();
+            renderMenuItems();
+            updateCurrentItemsList();
+        }
+        function getPrice() {
+            const dollars = document.getElementById('itemDollars').value || '0';
+            const cents = document.getElementById('itemCents').value || '00';
+            return `${dollars}.${cents.padStart(2, '0')}`;
+        }
+
+        // Set price in separate fields
+        function setPrice(price) {
+            const parts = price.split('.');
+            document.getElementById('itemDollars').value = parts[0] || '0';
+            document.getElementById('itemCents').value = parts[1] || '00';
+        }
+
+        // Format price for display (remove .00 for whole dollars)
+        function formatPriceForDisplay(price) {
+            if (price.endsWith('.00')) {
+                return price.slice(0, -3);
+            }
+            return price;
+        }
+
+        // Generate option text based on checkboxes
+        function getOptionText(options) {
+            let text = '';
+            
+            if (options.isHotSoup) {
+                text += 'optional oyster crackers and sour cream; available as a cup or bowl (+2)';
+            } else if (options.isColdSoup) {
+                text += 'available as a cup or bowl (+2)';
+            }
+            
+            if (options.hasFries) {
+                if (text) text += ' ';
+                text += 'available with optional sauces for your fries (+.90)';
+            }
+            
+            return text;
+        }
+        // Get selected allergens
+        function getSelectedAllergens() {
+            const allergens = [];
+            allergenOptions.forEach(allergen => {
+                const checkbox = document.getElementById(`allergen_${allergen}`);
+                if (checkbox.checked) {
+                    allergens.push(allergen);
+                }
+            });
+            return allergens;
+        }
+
+        // Set selected allergens
+        function setSelectedAllergens(allergens) {
+            allergenOptions.forEach(allergen => {
+                const checkbox = document.getElementById(`allergen_${allergen}`);
+                checkbox.checked = allergens.includes(allergen);
+            });
+        }
+
+        // Add item
+        function addItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const description = document.getElementById('itemDescription').value.trim();
+            const price = getPrice();
+            const allergens = getSelectedAllergens();
+            const options = getItemOptions();
+
+            if (!name || !description) {
+                alert('Please fill in item name and description');
+                return;
+            }
+
+            if (editingItemId) {
+                // Update existing item
+                const itemIndex = menuItems.findIndex(item => item.id === editingItemId);
+                if (itemIndex !== -1) {
+                    menuItems[itemIndex] = {
+                        id: editingItemId,
+                        name: name,
+                        description: description,
+                        price: price,
+                        allergens: allergens,
+                        options: options
+                    };
+                }
+                cancelEdit();
+            } else {
+                // Add new item
+                const newItem = {
+                    id: Date.now(),
+                    name: name,
+                    description: description,
+                    price: price,
+                    allergens: allergens,
+                    options: options
+                };
+                menuItems.push(newItem);
+            }
+
+            clearForm();
+            saveData();
+            renderMenuItems();
+            updateCurrentItemsList();
+        }
+
+        // Edit item
+        function editItem(id) {
+            const item = menuItems.find(item => item.id === id);
+            if (!item) return;
+
+            editingItemId = id;
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemDescription').value = item.description;
+            setPrice(item.price);
+            setSelectedAllergens(item.allergens);
+            setItemOptions(item.options || {});
+
+            document.getElementById('formTitle').textContent = 'Edit Menu Item';
+            document.getElementById('formButtons').innerHTML = `
+                <button type="button" onclick="addItem()" class="btn btn-success">Save Changes</button>
+                <button type="button" onclick="cancelEdit()" class="btn btn-secondary">Cancel</button>
+            `;
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            editingItemId = null;
+            clearForm();
+            document.getElementById('formTitle').textContent = 'Add Menu Item';
+            document.getElementById('formButtons').innerHTML = `
+                <button type="button" onclick="addItem()" class="btn btn-success">Add Item</button>
+            `;
+        }
+
+        // Archive item
+        function archiveItem(id) {
+            const item = menuItems.find(item => item.id === id);
+            if (!item) return;
+
+            archivedItems.push(item);
+            menuItems = menuItems.filter(item => item.id !== id);
+            
+            saveData();
+            renderMenuItems();
+            updateCurrentItemsList();
+            updateArchivedItemsList();
+        }
+
+        // Restore item from archive
+        function restoreItem(id) {
+            const item = archivedItems.find(item => item.id === id);
+            if (!item) return;
+
+            // Give it a new ID to avoid conflicts
+            const restoredItem = { ...item, id: Date.now() };
+            menuItems.push(restoredItem);
+            archivedItems = archivedItems.filter(item => item.id !== id);
+            
+            saveData();
+            renderMenuItems();
+            updateCurrentItemsList();
+            updateArchivedItemsList();
+        }
+
+        // Delete item permanently
+        function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item permanently?')) {
+                menuItems = menuItems.filter(item => item.id !== id);
+                saveData();
+                renderMenuItems();
+                updateCurrentItemsList();
+            }
+        }
+
+        // Delete item from archive permanently
+        function deleteArchivedItem(id) {
+            if (confirm('Are you sure you want to permanently delete this archived item?')) {
+                archivedItems = archivedItems.filter(item => item.id !== id);
+                saveData();
+                updateArchivedItemsList();
+            }
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemDescription').value = '';
+            setPrice('0.00');
+            setSelectedAllergens([]);
+            document.getElementById('itemOptions').value = '';
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return price.replace(/^\$+/, '');
+        }
+
+        // Format item name to title case
+        function formatItemName(name) {
+            return name.split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+        }
+
+        // Format allergens
+        function formatAllergens(allergens) {
+            return allergens.length > 0 ? `(${allergens.join(', ')})` : '';
+        }
+
+        // Update current date
+        function updateCurrentDate() {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const today = new Date();
+            const dateStr = `${days[today.getDay()]} - ${months[today.getMonth()]} ${today.getDate()}`;
+            document.getElementById('currentDate').textContent = dateStr;
+        }
+
+        // Render menu items
+        function renderMenuItems() {
+            const container = document.getElementById('menuItems');
+            
+            if (menuItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        No items added yet. Use the form to add menu items.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = menuItems.map((item, index) => {
+                const optionText = getOptionText(item.options || {});
+                
+                return `
+                    <div class="menu-item" draggable="true" 
+                         onDragStart="handleDragStart(event, ${index})"
+                         onDragEnd="handleDragEnd(event)"
+                         onDragOver="handleDragOver(event)"
+                         onDrop="handleDrop(event, ${index})"
+                         style="cursor: move;">
+                        <div class="menu-item-header">
+                            <div style="flex: 1;">
+                                <span class="menu-item-name">${formatItemName(item.name)}</span>
+                                ${item.allergens.length > 0 ? `<span class="menu-item-allergens">${formatAllergens(item.allergens)}</span>` : ''}
+                            </div>
+                            <span class="menu-item-price">${formatPriceForDisplay(item.price)}</span>
+                        </div>
+                        <div class="menu-item-description">${item.description.toLowerCase()}</div>
+                        ${optionText ? `<div class="menu-item-description">${optionText}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update current items list
+        function updateCurrentItemsList() {
+            const container = document.getElementById('currentItems');
+            const itemsList = document.getElementById('itemsList');
+            const itemCount = document.getElementById('itemCount');
+
+            if (menuItems.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            itemCount.textContent = menuItems.length;
+
+            itemsList.innerHTML = menuItems.map(item => `
+                <div class="item-list-entry">
+                    <div>
+                        <div style="font-weight: 500;">${formatItemName(item.name)}</div>
+                        <div style="font-size: 14px; color: #6b7280;">${formatPriceForDisplay(item.price)}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="editItem(${item.id})" class="edit-btn">Edit</button>
+                        <button onclick="archiveItem(${item.id})" class="archive-btn">Archive</button>
+                        <button onclick="deleteItem(${item.id})" class="delete-btn">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update archived items list
+        function updateArchivedItemsList() {
+            const container = document.getElementById('archivedItemsList');
+
+            if (archivedItems.length === 0) {
+                container.innerHTML = '<div class="empty-state">No archived items yet.</div>';
+                return;
+            }
+
+            container.innerHTML = archivedItems.map(item => `
+                <div class="item-list-entry">
+                    <div>
+                        <div style="font-weight: 500;">${formatItemName(item.name)}</div>
+                        <div style="font-size: 14px; color: #6b7280;">${formatPriceForDisplay(item.price)}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="restoreItem(${item.id})" class="restore-btn">Restore</button>
+                        <button onclick="deleteArchivedItem(${item.id})" class="delete-btn">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('cafeMenuItems', JSON.stringify(menuItems));
+            localStorage.setItem('cafeArchivedItems', JSON.stringify(archivedItems));
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedItems = localStorage.getItem('cafeMenuItems');
+            const savedArchived = localStorage.getItem('cafeArchivedItems');
+            
+            if (savedItems) {
+                menuItems = JSON.parse(savedItems);
+            }
+            if (savedArchived) {
+                archivedItems = JSON.parse(savedArchived);
+            }
+        }
+
+        // Handle Enter key in password field
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
